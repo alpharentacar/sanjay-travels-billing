@@ -15,6 +15,9 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY
 );
 
+// Google Sheets Webhook URL
+const GOOGLE_SHEET_WEBHOOK = 'https://script.google.com/macros/s/AKfycbzr_WP8AnE2YA5LRD1r4H2kpIaMCUznWYQZB2f3e9aL5nPpuenP7WfDhwfKn3Uh3pw/exec';
+
 // ============ HEALTH CHECK ============
 app.get('/', (req, res) => {
   res.json({
@@ -90,12 +93,25 @@ app.post('/api/invoices', async (req, res) => {
       data.invoice_date = new Date().toISOString().split('T')[0];
     }
 
+    // Save to Supabase
     const { data: result, error } = await supabase
       .from('invoices')
       .insert([data])
       .select();
 
     if (error) throw error;
+
+    // Send to Google Sheets (backup)
+    try {
+      await fetch(GOOGLE_SHEET_WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(result[0])
+      });
+      console.log('✅ Added to Google Sheet');
+    } catch (sheetErr) {
+      console.error('⚠️ Google Sheet sync failed:', sheetErr.message);
+    }
 
     res.status(201).json({
       success: true,
