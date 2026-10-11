@@ -174,12 +174,12 @@ app.get('/api/auth/check', requireAuth, (req, res) => {
 });
 
 // All protected API routes below this point
-app.use('/api', (req, res, next) => {
-  if (req.path === '/auth/login' || req.path === '/auth/check') {
-    return next();
-  }
-  return requireAuth(req, res, next);
-});
+//app.use('/api', (req, res, next) => {
+  //if (req.path === '/auth/login' || req.path === '/auth/check') {
+   // return next();
+  //}
+  //return requireAuth(req, res, next);
+//});
 
 // ============ GET NEXT INVOICE NUMBER ============
 app.get('/api/invoice/next-number', async (req, res) => {
