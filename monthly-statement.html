@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monthly Statement - Sanjay Travels</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.1/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+
+<script>
+(async function () {
+  try {
+    const response = await fetch('/api/auth/check', {
+      credentials: 'include'
+    });
+    if (!response.ok) {
+      window.location.href = 'login.html';
+    }
+  } catch (error) {
+    window.location.href = 'login.html';
+  }
+})();
+</script>
+
+<div class="app-container">
+  
+  <header class="app-header no-print">
+    <div class="header-left">
+      <div class="header-logo">SANJAY <span>TRAVELS</span></div>
+      <div class="header-tagline">Billing Software</div>
+    </div>
+    <div class="header-right">
+      <a href="index.html" class="header-link">+ New Invoice</a>
+      <a href="invoices.html" class="header-link">📋 All Invoices</a>
+      <a href="logout" class="header-link">🚪 Logout</a>
+    </div>
+  </header>
+
+  <div class="app-body">
+    
+    <div class="form-header">
+      <h1>Monthly Statement</h1>
+      <p>Generate a monthly bill for any customer</p>
+    </div>
+
+    <div class="form-section">
+      <div class="section-title">📅 Select Customer & Month</div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label>Customer <span class="req">*</span></label>
+          <select id="customerSelect">
+            <option value="">-- Select Customer --</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label>From Date <span class="req">*</span></label>
+          <input type="date" id="fromDate">
+        </div>
+        
+        <div class="form-group">
+          <label>To Date <span class="req">*</span></label>
+          <input type="date" id="toDate">
+        </div>
+      </div>
+      
+      <div class="form-actions">
+        <button class="btn btn-primary" id="generateBtn">
+          📊 Generate Statement
+        </button>
+      </div>
+    </div>
+
+    <div id="previewSection" style="display:none;">
+      <div class="invoice-actions no-print">
+        <button class="action-btn-print" onclick="downloadPDF()">
+          📥 Download PDF
+        </button>
+        <button class="action-btn-print" onclick="window.print()">
+          🖨️ Print
+        </button>
+      </div>
+      
+      <div class="invoice-paper" id="statementPaper"></div>
+    </div>
+
+  </div>
+</div>
+
+<script src="monthly-statement.js"></script>
+</body>
+</html>

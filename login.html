@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sanjay Travels</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="login-page">
+
+        <div class="login-box">
+
+            <div class="login-logo">
+                SANJAY <span>TRAVELS</span>
+            </div>
+
+            <div class="login-subtitle">
+                Billing Software
+            </div>
+
+            <h2>Login</h2>
+
+            <div class="login-form">
+
+                <label for="username">Username</label>
+                <input
+                    type="text"
+                    id="username"
+                    placeholder="Enter username"
+                    autocomplete="username"
+                >
+
+                <label for="password">Password</label>
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Enter password"
+                    autocomplete="current-password"
+                >
+
+                <button type="button" onclick="loginUser()">
+                    LOGIN
+                </button>
+
+                <p id="loginError"></p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="login.js"></script>
+
+</body>
+</html>

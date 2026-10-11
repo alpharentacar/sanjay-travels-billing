@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>All Invoices - Sanjay Travels</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<script>
+    (async function () {
+        try {
+            const response = await fetch('/api/auth/check', {
+                credentials: 'include'
+            });
+
+            if (!response.ok) {
+                window.location.href = 'login.html';
+            }
+        } catch (error) {
+            window.location.href = 'login.html';
+        }
+    })();
+</script>
+
+
+<div class="app-container">
+  
+  <!-- HEADER -->
+  <header class="app-header">
+    <div class="header-left">
+      <div class="header-logo">SANJAY <span>TRAVELS</span></div>
+      <div class="header-tagline">Billing Software</div>
+    </div>
+    <div class="header-right">
+      <a href="index.html" class="header-link">+ New Invoice</a>
+      <a href="monthly-statement.html" class="header-link">📄 Monthly Statement</a>
+    </div>
+  </header>
+
+  <div class="app-body">
+    
+    <div class="form-header">
+      <h1>All Invoices</h1>
+      <p>Browse, search, and manage all your bills</p>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Total Invoices</div>
+        <div class="stat-value" id="statTotal">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Revenue</div>
+        <div class="stat-value" id="statRevenue">₹0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">This Month</div>
+        <div class="stat-value" id="statMonth">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Month Revenue</div>
+        <div class="stat-value" id="statMonthRevenue">₹0</div>
+      </div>
+    </div>
+
+    <!-- CONTROLS -->
+    <div class="controls-row">
+      <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search by customer, contact, or invoice no...">
+      <input type="date" id="fromDate" class="filter-input">
+      <input type="date" id="toDate" class="filter-input">
+      <select id="carFilter" class="filter-select">
+        <option value="">All Cars</option>
+        <option value="Dezire">Dezire</option>
+        <option value="Crysta">Crysta</option>
+        <option value="Ertiga">Ertiga</option>
+      </select>
+      <button id="clearBtn" class="clear-btn">Clear</button>
+      <button id="exportBtn" class="export-btn">📥 Export to Excel</button>
+    </div>
+
+    <!-- TABLE -->
+    <div class="invoices-table-wrapper">
+      <table class="invoices-table">
+        <thead>
+          <tr>
+            <th>Invoice No</th>
+            <th>Date</th>
+            <th>Customer</th>
+            <th>Contact</th>
+            <th>Car Type</th>
+            <th>Total KM</th>
+            <th>Total Amount</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="invoicesBody">
+          <tr><td colspan="8" class="loading-text">Loading invoices...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<script src="invoices.js"></script>
+
+</body>
+</html>

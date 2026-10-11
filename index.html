@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sanjay Travels - Billing Software</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<script>
+    (async function () {
+        try {
+            const response = await fetch('/api/auth/check', {
+    credentials: 'include'
+})
+
+            if (!response.ok) {
+                window.location.href = 'login.html';
+            }
+        } catch (error) {
+            window.location.href = 'login.html';
+        }
+    })();
+</script>
+
+
+<div class="app-container">
+  
+  <!-- HEADER -->
+  <header class="app-header">
+    <div class="header-left">
+      <div class="header-logo">SANJAY <span>TRAVELS</span></div>
+      <div class="header-tagline">Billing Software</div>
+    </div>
+    <div class="header-right">
+      <a href="invoices.html" class="header-link">📋 All Invoices</a>
+    </div>
+  </header>
+
+  <!-- MAIN BILLING FORM -->
+  <div class="app-body">
+    
+   <div class="form-header">
+  <h1 id="formHeading">Create New Invoice</h1>
+  <p id="formSubheading">Fill in the details below to generate a bill</p>
+</div>
+
+    <form id="billingForm">
+      
+      <!-- INVOICE NUMBER -->
+      <div class="form-section">
+        <div class="section-title">📋 Invoice Info</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Invoice No</label>
+            <input type="text" id="invoice_no" placeholder="Auto-generated" readonly>
+          </div>
+          <div class="form-group">
+            <label>Date</label>
+            <input type="date" id="invoice_date" required>
+          </div>
+        </div>
+      </div>
+
+      <!-- CUSTOMER DETAILS -->
+      <div class="form-section">
+        <div class="section-title">👤 Customer Details</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Customer Name <span class="req">*</span></label>
+            <input type="text" id="customer_name" placeholder="Enter customer name" required>
+          </div>
+          <div class="form-group">
+            <label>Contact No</label>
+            <input type="tel" id="contact_no" placeholder="10-digit number">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Booked By</label>
+            <input type="text" id="booked_by" placeholder="Team member name">
+          </div>
+          <div class="form-group">
+            <label>Report To</label>
+            <input type="text" id="report_to" placeholder="Contact person">
+          </div>
+        </div>
+      </div>
+
+      <!-- CAR & DRIVER -->
+      <div class="form-section">
+        <div class="section-title">🚗 Car & Driver</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Car Type <span class="req">*</span></label>
+            <select id="car_type" required>
+              <option value="">-- Select Car --</option>
+              <option value="Dezire">Swift Dezire</option>
+              <option value="Crysta">Innova Crysta</option>
+              <option value="Ertiga">Ertiga</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Car Number</label>
+            <input type="text" id="car_no" placeholder="e.g. DL01AB1234">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Driver Name</label>
+            <input type="text" id="driver_name" placeholder="Driver name">
+          </div>
+          <div class="form-group">
+            <label>Driver Cell</label>
+            <input type="tel" id="driver_cell" placeholder="Driver number">
+          </div>
+        </div>
+      </div>
+
+      <!-- TRIP DETAILS -->
+      <div class="form-section">
+        <div class="section-title">🛣️ Trip Details</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Report At</label>
+            <input type="text" id="report_at" placeholder="e.g. Delhi Airport">
+          </div>
+          <div class="form-group">
+            <label>Outstation?</label>
+            <select id="is_outstation">
+              <option value="false">No (Local)</option>
+              <option value="true">Yes (Outstation)</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label>Opening KM</label>
+            <input type="number" id="opening_km" placeholder="0" value="0">
+          </div>
+          <div class="form-group">
+            <label>Closing KM</label>
+            <input type="number" id="closing_km" placeholder="0" value="0">
+          </div>
+          <div class="form-group">
+            <label>Total KM <span class="auto-tag">Auto</span></label>
+            <input type="number" id="total_km" readonly>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Opening Time</label>
+            <input type="time" id="opening_time" value="10:00">
+          </div>
+          <div class="form-group">
+            <label>Closing Time</label>
+            <input type="time" id="closing_time" value="18:00">
+          </div>
+          <div class="form-group">
+            <label>Total Hours <span class="auto-tag">Auto</span></label>
+            <input type="number" id="total_hours" step="0.5" readonly>
+          </div>
+        </div>
+      </div>
+
+      <!-- RATES -->
+      <div class="form-section">
+        <div class="section-title">💰 Rates (Editable)</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Fix Rate (80km/8hr) <span class="req">*</span></label>
+            <input type="number" id="fix_rate" placeholder="0" required>
+          </div>
+          <div class="form-group">
+            <label>Extra KM Rate (per km)</label>
+            <input type="number" id="extra_km_rate" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label>Extra Hour Rate (per hr)</label>
+            <input type="number" id="extra_hour_rate" placeholder="0">
+          </div>
+        </div>
+      </div>
+
+      <!-- AUTO CALCULATED CHARGES -->
+      <div class="form-section highlight">
+        <div class="section-title">📊 Auto-Calculated Charges</div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label>Extra KM (80 se upar) <span class="auto-tag">Auto</span></label>
+            <input type="number" id="extra_km" readonly>
+          </div>
+          <div class="form-group">
+            <label>Extra KM Amount</label>
+            <input type="number" id="extra_km_amount" readonly>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Extra Hours (8 se upar) <span class="auto-tag">Auto</span></label>
+            <input type="number" id="extra_hours" step="0.5" readonly>
+          </div>
+          <div class="form-group">
+            <label>Extra Hours Amount</label>
+            <input type="number" id="extra_hour_amount" readonly>
+          </div>
+        </div>
+      </div>
+
+      <!-- MANUAL EXTRA CHARGES -->
+      <div class="form-section">
+        <div class="section-title">➕ Extra Charges (Manual)</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Driver Allowance (₹400 - Outstation only)</label>
+            <input type="number" id="driver_allowance" placeholder="0" value="0">
+          </div>
+          <div class="form-group">
+            <label>Night Allowance (₹300 - 10PM-6AM)</label>
+            <input type="number" id="night_allowance" placeholder="0" value="0">
+          </div>
+          <div class="form-group">
+            <label>Toll / Parking</label>
+            <input type="number" id="toll_parking" placeholder="0" value="0">
+          </div>
+        </div>
+      </div>
+
+      <!-- FINAL TOTAL -->
+      <div class="form-section total-section">
+        <div class="total-row">
+          <div class="total-label">GRAND TOTAL</div>
+          <div class="total-value" id="total_display">₹0</div>
+        </div>
+        <input type="hidden" id="total_amount" value="0">
+      </div>
+
+      <!-- NOTES -->
+      <div class="form-section">
+        <div class="form-group">
+          <label>Notes (optional)</label>
+          <textarea id="notes" placeholder="Any additional notes..."></textarea>
+        </div>
+      </div>
+
+      <!-- SUBMIT -->
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset</button>
+        <button type="submit" class="btn btn-primary" id="saveBtn">💾 Save & Generate Invoice</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Invoice - Sanjay Travels</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<script>
+    (async function () {
+        try {
+            const response = await fetch('/api/auth/check', {
+                credentials: 'include'
+            });
+
+            if (!response.ok) {
+                window.location.href = 'login.html';
+            }
+        } catch (error) {
+            window.location.href = 'login.html';
+        }
+    })();
+</script>
+
+
+<div class="app-container">
+  
+  <header class="app-header no-print">
+    <div class="header-left">
+      <div class="header-logo">SANJAY <span>TRAVELS</span></div>
+      <div class="header-tagline">Billing Software</div>
+    </div>
+    <div class="header-right">
+      <a href="index.html" class="header-link">+ New Invoice</a>
+      <a href="invoices.html" class="header-link">📋 All Invoices</a>
+    </div>
+  </header>
+
+  <div class="app-body">
+    
+    <div class="invoice-actions no-print">
+      <a href="invoices.html" class="action-btn-back">← Back</a>
+      <button class="action-btn-print" onclick="window.print()">🖨️ Print / Save PDF</button>
+    </div>
+
+    <div class="invoice-paper" id="invoicePaper">
+      
+      <div class="invoice-header-print">
+        <div>
+          <div class="invoice-brand">SANJAY <span>TRAVELS</span></div>
+          <div class="invoice-brand-sub">
+            Katwaria Sarai<br>
+            📞 9810779652, 7982300039
+          </div>
+        </div>
+        <div class="invoice-meta">
+          <div class="label">Invoice No</div>
+          <div class="value" id="invNo">-</div>
+          <div class="label">Date</div>
+          <div class="value" id="invDate">-</div>
+        </div>
+      </div>
+
+      <div class="invoice-details-grid">
+        <div class="detail-box">
+          <div class="detail-box-title">Customer Details</div>
+          <div class="detail-row"><span class="key">Name:</span><span class="val" id="custName">-</span></div>
+          <div class="detail-row"><span class="key">Contact:</span><span class="val" id="custPhone">-</span></div>
+          <div class="detail-row"><span class="key">Booked By:</span><span class="val" id="bookedBy">-</span></div>
+          <div class="detail-row"><span class="key">Report To:</span><span class="val" id="reportTo">-</span></div>
+        </div>
+
+        <div class="detail-box">
+          <div class="detail-box-title">Car & Driver</div>
+          <div class="detail-row"><span class="key">Car Type:</span><span class="val" id="carType">-</span></div>
+          <div class="detail-row"><span class="key">Car No:</span><span class="val" id="carNo">-</span></div>
+          <div class="detail-row"><span class="key">Driver:</span><span class="val" id="driverName">-</span></div>
+          <div class="detail-row"><span class="key">Driver Cell:</span><span class="val" id="driverCell">-</span></div>
+        </div>
+      </div>
+
+      <div class="invoice-details-grid">
+        <div class="detail-box">
+          <div class="detail-box-title">Trip Details</div>
+          <div class="detail-row"><span class="key">Report At:</span><span class="val" id="reportAt">-</span></div>
+          <div class="detail-row"><span class="key">Opening KM:</span><span class="val" id="openingKm">-</span></div>
+          <div class="detail-row"><span class="key">Closing KM:</span><span class="val" id="closingKm">-</span></div>
+          <div class="detail-row"><span class="key">Total KM:</span><span class="val" id="totalKm">-</span></div>
+        </div>
+
+        <div class="detail-box">
+          <div class="detail-box-title">Time Details</div>
+          <div class="detail-row"><span class="key">Opening:</span><span class="val" id="openingTime">-</span></div>
+          <div class="detail-row"><span class="key">Closing:</span><span class="val" id="closingTime">-</span></div>
+          <div class="detail-row"><span class="key">Total Hours:</span><span class="val" id="totalHours">-</span></div>
+          <div class="detail-row"><span class="key">Outstation:</span><span class="val" id="isOutstation">-</span></div>
+        </div>
+      </div>
+
+      <table class="invoice-table">
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th style="text-align:right;">Rate</th>
+            <th style="text-align:right;">Qty</th>
+            <th style="text-align:right;">Amount</th>
+          </tr>
+        </thead>
+        <tbody id="chargesBody">
+        </tbody>
+        <tfoot>
+          <tr class="grand-total">
+            <td colspan="3">GRAND TOTAL</td>
+            <td id="grandTotal">₹0</td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <div id="notesSection" style="display:none;">
+        <div class="detail-box">
+          <div class="detail-box-title">Notes</div>
+          <p id="notesText" style="font-size:14px;"></p>
+        </div>
+      </div>
+
+      <div class="invoice-footer">
+        <div class="invoice-terms">
+          <strong>Terms & Conditions:</strong><br>
+          1. Please check your goods before leaving vehicle else its owners risk.<br>
+          2. Timing & Distance calculated from garage to garage.
+        </div>
+        <div class="invoice-signature">
+          <div class="signature-box">Customer Signature</div>
+          <div class="signature-box">For Sanjay Travels</div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<script src="invoice-view.js"></script>
+
+</body>
+</html>
