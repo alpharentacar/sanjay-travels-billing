@@ -3,7 +3,9 @@ let statementData = null;
 
 async function loadCustomers() {
   try {
-    const response = await fetch(`${API_URL}/api/customers`);
+    const response = await fetch(`${API_URL}/api/customers`, {
+      credentials: 'include'
+    });
     const data = await response.json();
     if (!data.success) return;
     
@@ -31,7 +33,8 @@ async function generateStatement() {
   
   try {
     const response = await fetch(
-      `${API_URL}/api/monthly-statement?customer=${encodeURIComponent(customer)}&from_date=${fromDate}&to_date=${toDate}`
+      `${API_URL}/api/monthly-statement?customer=${encodeURIComponent(customer)}&from_date=${fromDate}&to_date=${toDate}`,
+      { credentials: 'include' }
     );
     const data = await response.json();
     
