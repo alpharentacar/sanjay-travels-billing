@@ -7,7 +7,7 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const FRONTEND_URL = process.env.FRONTEND_URL || 'https://sanjay-travels-billing.netlify.app';
+const FRONTEND_URL = process.env.FRONTEND_URL || 'https://sanjaybilling.netlify.app';
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 const SESSION_SECRET = process.env.SESSION_SECRET;
@@ -172,14 +172,6 @@ app.get('/api/auth/check', requireAuth, (req, res) => {
     username: req.user
   });
 });
-
-// All protected API routes below this point
-//app.use('/api', (req, res, next) => {
-  //if (req.path === '/auth/login' || req.path === '/auth/check') {
-   // return next();
-  //}
-  //return requireAuth(req, res, next);
-//});
 
 // ============ GET NEXT INVOICE NUMBER ============
 app.get('/api/invoice/next-number', async (req, res) => {
@@ -396,22 +388,26 @@ app.get('/api/stats', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-// ============ MONTHLY STATEMENT ============
+
+// ============ MONTHLY STATEMENT (single or all customers) ============
 app.get('/api/monthly-statement', async (req, res) => {
   try {
     const { customer, from_date, to_date } = req.query;
     
-    if (!customer || !from_date || !to_date) {
-      return res.status(400).json({ error: 'Customer, from_date, to_date required' });
+    if (!from_date || !to_date) {
+      return res.status(400).json({ error: 'from_date, to_date required' });
     }
     
     let query = supabase
       .from('invoices')
       .select('*')
-      .eq('customer_name', customer)
       .gte('invoice_date', from_date)
       .lte('invoice_date', to_date)
       .order('invoice_date', { ascending: true });
+    
+    if (customer) {
+      query = query.eq('customer_name', customer);
+    }
     
     const { data, error } = await query;
     
@@ -423,7 +419,7 @@ app.get('/api/monthly-statement', async (req, res) => {
     
     res.json({
       success: true,
-      customer: customer,
+      customer: customer || 'ALL',
       from_date: from_date,
       to_date: to_date,
       invoices: data,
@@ -434,6 +430,67 @@ app.get('/api/monthly-statement', async (req, res) => {
     
   } catch (err) {
     console.error('Monthly statement error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ============ MONTHLY STATEMENT - ALL CUSTOMERS GROUPED ============
+app.get('/api/monthly-statement-all', async (req, res) => {
+  try {
+    const { from_date, to_date } = req.query;
+    
+    if (!from_date || !to_date) {
+      return res.status(400).json({ error: 'from_date, to_date required' });
+    }
+    
+    const { data, error } = await supabase
+      .from('invoices')
+      .select('*')
+      .gte('invoice_date', from_date)
+      .lte('invoice_date', to_date)
+      .order('customer_name', { ascending: true })
+      .order('invoice_date', { ascending: true });
+    
+    if (error) throw error;
+    
+    const grouped = {};
+    data.forEach(inv => {
+      const name = inv.customer_name || 'Unknown';
+      if (!grouped[name]) grouped[name] = [];
+      grouped[name].push(inv);
+    });
+    
+    const customers = Object.keys(grouped).map(name => {
+      const invoices = grouped[name];
+      const totalAmount = invoices.reduce((sum, inv) => sum + (parseFloat(inv.total_amount) || 0), 0);
+      const igst = totalAmount * 0.05;
+      const grandTotal = totalAmount + igst;
+      
+      return {
+        customer: name,
+        invoices: invoices,
+        total_amount: totalAmount,
+        igst: igst,
+        grand_total: grandTotal
+      };
+    });
+    
+    const overallTotal = customers.reduce((sum, c) => sum + c.total_amount, 0);
+    const overallIgst = customers.reduce((sum, c) => sum + c.igst, 0);
+    const overallGrandTotal = customers.reduce((sum, c) => sum + c.grand_total, 0);
+    
+    res.json({
+      success: true,
+      from_date: from_date,
+      to_date: to_date,
+      customers: customers,
+      overall_total: overallTotal,
+      overall_igst: overallIgst,
+      overall_grand_total: overallGrandTotal
+    });
+    
+  } catch (err) {
+    console.error('Monthly statement all error:', err);
     res.status(500).json({ error: err.message });
   }
 });
