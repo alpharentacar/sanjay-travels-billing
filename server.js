@@ -414,8 +414,6 @@ app.get('/api/monthly-statement', async (req, res) => {
     if (error) throw error;
     
     const totalAmount = data.reduce((sum, inv) => sum + (parseFloat(inv.total_amount) || 0), 0);
-    const igst = totalAmount * 0.05;
-    const grandTotal = totalAmount + igst;
     
     res.json({
       success: true,
@@ -424,8 +422,7 @@ app.get('/api/monthly-statement', async (req, res) => {
       to_date: to_date,
       invoices: data,
       total_amount: totalAmount,
-      igst: igst,
-      grand_total: grandTotal
+      grand_total: totalAmount
     });
     
   } catch (err) {
@@ -463,21 +460,16 @@ app.get('/api/monthly-statement-all', async (req, res) => {
     const customers = Object.keys(grouped).map(name => {
       const invoices = grouped[name];
       const totalAmount = invoices.reduce((sum, inv) => sum + (parseFloat(inv.total_amount) || 0), 0);
-      const igst = totalAmount * 0.05;
-      const grandTotal = totalAmount + igst;
       
       return {
         customer: name,
         invoices: invoices,
         total_amount: totalAmount,
-        igst: igst,
-        grand_total: grandTotal
+        grand_total: totalAmount
       };
     });
     
     const overallTotal = customers.reduce((sum, c) => sum + c.total_amount, 0);
-    const overallIgst = customers.reduce((sum, c) => sum + c.igst, 0);
-    const overallGrandTotal = customers.reduce((sum, c) => sum + c.grand_total, 0);
     
     res.json({
       success: true,
@@ -485,8 +477,7 @@ app.get('/api/monthly-statement-all', async (req, res) => {
       to_date: to_date,
       customers: customers,
       overall_total: overallTotal,
-      overall_igst: overallIgst,
-      overall_grand_total: overallGrandTotal
+      overall_grand_total: overallTotal
     });
     
   } catch (err) {
